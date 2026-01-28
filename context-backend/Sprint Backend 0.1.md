@@ -104,6 +104,9 @@ Endpoints
 GET  /api/sellers/
 POST /api/sellers/
 
+-- Me parece que habia llegado hasta aquí lo demas tendré que seguirlo con codex
+
+--Falta continuar:
 🟦 Día 4 — Planes
 
 Backend
@@ -181,3 +184,4 @@ Si eso pasa → Sprint 0.1 DONE ✅
 ❌ “Hagamos microservicios”
 
 Disciplina = velocidad.
+
