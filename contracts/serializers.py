@@ -22,6 +22,8 @@ class ContractSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("El cliente no pertenece a tu franquicia.")
         if plan and plan.franchise_id != profile.franchise_id:
             raise serializers.ValidationError("El plan no pertenece a tu franquicia.")
+        if plan and not plan.is_active:
+            raise serializers.ValidationError("No se puede contratar un plan inactivo.")
         if customer and plan and customer.franchise_id != plan.franchise_id:
             raise serializers.ValidationError("Cliente y plan deben pertenecer a la misma franquicia.")
 
@@ -32,3 +34,9 @@ class ContractStateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contract
         fields = ["state"]
+
+    def validate_state(self, value):
+        instance = self.instance
+        if instance and not Contract.can_transition(instance.state, value):
+            raise serializers.ValidationError("Transición de estado no permitida.")
+        return value

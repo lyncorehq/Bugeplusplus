@@ -6,15 +6,15 @@ from services.models import Plan
 
 
 class Contract(models.Model):
-    STATE_POR_INSTALAR = "por_instalar"
-    STATE_ACTIVO = "activo"
-    STATE_SUSPENDIDO = "suspendido"
-    STATE_CANCELADO = "cancelado"
+    STATE_PENDING = "pending"
+    STATE_ACTIVE = "active"
+    STATE_SUSPENDED = "suspended"
+    STATE_CANCELLED = "cancelled"
     STATE_CHOICES = [
-        (STATE_POR_INSTALAR, "Por instalar"),
-        (STATE_ACTIVO, "Activo"),
-        (STATE_SUSPENDIDO, "Suspendido"),
-        (STATE_CANCELADO, "Cancelado"),
+        (STATE_PENDING, "Pending"),
+        (STATE_ACTIVE, "Active"),
+        (STATE_SUSPENDED, "Suspended"),
+        (STATE_CANCELLED, "Cancelled"),
     ]
 
     franchise = models.ForeignKey(
@@ -35,7 +35,7 @@ class Contract(models.Model):
     state = models.CharField(
         max_length=20,
         choices=STATE_CHOICES,
-        default=STATE_POR_INSTALAR,
+        default=STATE_PENDING,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -43,3 +43,13 @@ class Contract(models.Model):
 
     def __str__(self):
         return f"Contract {self.id} ({self.franchise.code})"
+
+    @classmethod
+    def can_transition(cls, current_state, next_state):
+        transitions = {
+            cls.STATE_PENDING: {cls.STATE_ACTIVE, cls.STATE_CANCELLED},
+            cls.STATE_ACTIVE: {cls.STATE_SUSPENDED, cls.STATE_CANCELLED},
+            cls.STATE_SUSPENDED: {cls.STATE_ACTIVE, cls.STATE_CANCELLED},
+            cls.STATE_CANCELLED: set(),
+        }
+        return next_state in transitions.get(current_state, set())

@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from users.permissions import HasUserProfile, IsAdminManagerOrSeller, IsSameFranchise
+from users.permissions import HasUserProfile, IsAdminManagerOrSeller, IsAdminOrManager, IsSameFranchise
 from .models import Contract
 from .serializers import ContractSerializer, ContractStateSerializer
 
@@ -11,6 +11,11 @@ from .serializers import ContractSerializer, ContractStateSerializer
 class ContractViewSet(ModelViewSet):
     serializer_class = ContractSerializer
     permission_classes = [IsAuthenticated, HasUserProfile, IsAdminManagerOrSeller, IsSameFranchise]
+
+    def get_permissions(self):
+        if self.action in {"destroy"}:
+            return [IsAuthenticated(), HasUserProfile(), IsAdminOrManager()]
+        return [IsAuthenticated(), HasUserProfile(), IsAdminManagerOrSeller()]
 
     def get_queryset(self):
         profile = self.request.user.profile

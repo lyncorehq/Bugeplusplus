@@ -22,6 +22,33 @@ class IsAdminOrManager(BasePermission):
         }
 
 
+class IsAdmin(BasePermission):
+    message = "Permisos insuficientes para esta acción."
+
+    def has_permission(self, request, view):
+        if not hasattr(request.user, "profile"):
+            return False
+        return request.user.profile.role == UserProfile.ROLE_ADMIN
+
+
+class IsManager(BasePermission):
+    message = "Permisos insuficientes para esta acción."
+
+    def has_permission(self, request, view):
+        if not hasattr(request.user, "profile"):
+            return False
+        return request.user.profile.role == UserProfile.ROLE_MANAGER
+
+
+class IsSeller(BasePermission):
+    message = "Permisos insuficientes para esta acción."
+
+    def has_permission(self, request, view):
+        if not hasattr(request.user, "profile"):
+            return False
+        return request.user.profile.role == UserProfile.ROLE_SELLER
+
+
 class IsAdminManagerOrSeller(BasePermission):
     message = "Permisos insuficientes para esta acción."
 
