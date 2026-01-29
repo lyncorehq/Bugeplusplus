@@ -1,8 +1,18 @@
 from django.conf import settings
 from django.db import models
+
 from core.models import Franchise
 
 class UserProfile(models.Model):
+    ROLE_ADMIN = "ADMIN"
+    ROLE_MANAGER = "MANAGER"
+    ROLE_SELLER = "SELLER"
+    ROLE_CHOICES = [
+        (ROLE_ADMIN, "Admin"),
+        (ROLE_MANAGER, "Manager"),
+        (ROLE_SELLER, "Seller"),
+    ]
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -15,11 +25,7 @@ class UserProfile(models.Model):
     )
     role = models.CharField(
         max_length=50,
-        choices=[
-            ("ADMIN", "Admin"),
-            ("MANAGER", "Manager"),
-            ("SELLER", "Seller"),
-        ]
+        choices=ROLE_CHOICES
     )
 
     def __str__(self):

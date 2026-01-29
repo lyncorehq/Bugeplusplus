@@ -1,5 +1,6 @@
-from rest_framework import serializers
 from django.contrib.auth.models import User
+from rest_framework import serializers
+
 from .models import Seller
 
 class MeSerializer(serializers.ModelSerializer):
@@ -18,3 +19,4 @@ class SellerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seller
         fields = ["id", "username", "email", "is_active"]
+        read_only_fields = ["username", "email"]
