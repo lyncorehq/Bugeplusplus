@@ -22,6 +22,19 @@ class IsAdminOrManager(BasePermission):
         }
 
 
+class IsAdminManagerOrSeller(BasePermission):
+    message = "Permisos insuficientes para esta acción."
+
+    def has_permission(self, request, view):
+        if not hasattr(request.user, "profile"):
+            return False
+        return request.user.profile.role in {
+            UserProfile.ROLE_ADMIN,
+            UserProfile.ROLE_MANAGER,
+            UserProfile.ROLE_SELLER,
+        }
+
+
 class IsSameFranchise(BasePermission):
     message = "No puedes acceder a recursos de otra franquicia."
 
